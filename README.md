@@ -14,6 +14,10 @@ instead of guessing.
 
 </div>
 
+<div align="center">
+<img src="docs/demo.gif" alt="figraph search returning ranked Nature exemplars" width="760">
+</div>
+
 ---
 
 ## Why
