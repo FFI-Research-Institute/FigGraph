@@ -79,12 +79,10 @@ def iter_article_ids(client, journal, year, max_pages):
                f"?year={year}&page={page}")
         try:
             html = _get(client, url)
-        except Exception as e:
-            # Nature 404s when you page past the last page (not an empty page);
-            # any other listing failure also ends this journal-year — a later
-            # run re-pages from the start and heals any gap.
-            print(f"  ! listing {journal} {year} p{page} ended ({type(e).__name__})")
-            break
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 404:
+                break  # Nature 404s when paging past the last page (not empty)
+            raise
         ids = [i for i in ID_RE.findall(html) if i not in seen]
         if not ids:
             break
@@ -142,42 +140,51 @@ def scrape(journals, years, out: Path, max_pages, delay):
     print(f"resume: {len(done)} articles already done")
 
     headers = {"User-Agent": UA, "Accept": "text/html,image/*"}
+    limits = httpx.Limits(max_connections=12, max_keepalive_connections=6)
     n_fig = 0
-    with httpx.Client(headers=headers, timeout=30, follow_redirects=True) as client, \
-            meta_path.open("a", encoding="utf-8") as mf:
+    with meta_path.open("a", encoding="utf-8") as mf:
         for journal in journals:
             jname = JOURNALS.get(journal, journal)
             for year in years:
-                for aid in iter_article_ids(client, journal, year, max_pages):
-                    if aid in done:
-                        continue
-                    try:
-                        title, doi, figures = parse_article(client, aid)
-                    except Exception as e:
-                        print(f"  ! {aid}: {type(e).__name__}: {e}")
-                        time.sleep(delay)
-                        continue
-                    for f in figures:
-                        dest = out / journal / str(year) / f"{aid}_Fig{f['fig_num']}.png"
-                        dest.parent.mkdir(parents=True, exist_ok=True)
-                        if not dest.exists():
-                            try:
-                                dest.write_bytes(_get(client, f["image_url"], binary=True))
-                            except Exception as e:
-                                print(f"  ! img {aid} Fig{f['fig_num']}: {e}")
+                # Fresh client per journal-year. A single long-lived client's
+                # connection pool got saturated mid-run and then PoolTimeout'd
+                # every later journal, silently dropping all of them.
+                try:
+                    with httpx.Client(headers=headers, timeout=30, limits=limits,
+                                      follow_redirects=True) as client:
+                        for aid in iter_article_ids(client, journal, year, max_pages):
+                            if aid in done:
                                 continue
-                        row = {"journal": jname, "year": year, "article_id": aid,
-                               "doi": doi, "title": title, "fig_num": f["fig_num"],
-                               "fig_title": f["fig_title"], "legend": f["legend"],
-                               "image_url": f["image_url"],
-                               "local_path": str(dest.relative_to(out))}
-                        mf.write(json.dumps(row, ensure_ascii=False) + "\n")
-                        mf.flush()
-                        n_fig += 1
-                    done.add(aid)
-                    print(f"  {jname} {year} {aid}: {len(figures)} figs "
-                          f"(total {n_fig})")
-                    time.sleep(delay)
+                            try:
+                                title, doi, figures = parse_article(client, aid)
+                            except Exception as e:
+                                print(f"  ! {aid}: {type(e).__name__}: {e}")
+                                time.sleep(delay)
+                                continue
+                            for f in figures:
+                                dest = out / journal / str(year) / f"{aid}_Fig{f['fig_num']}.png"
+                                dest.parent.mkdir(parents=True, exist_ok=True)
+                                if not dest.exists():
+                                    try:
+                                        dest.write_bytes(_get(client, f["image_url"], binary=True))
+                                    except Exception as e:
+                                        print(f"  ! img {aid} Fig{f['fig_num']}: {e}")
+                                        continue
+                                row = {"journal": jname, "year": year, "article_id": aid,
+                                       "doi": doi, "title": title, "fig_num": f["fig_num"],
+                                       "fig_title": f["fig_title"], "legend": f["legend"],
+                                       "image_url": f["image_url"],
+                                       "local_path": str(dest.relative_to(out))}
+                                mf.write(json.dumps(row, ensure_ascii=False) + "\n")
+                                mf.flush()
+                                n_fig += 1
+                            done.add(aid)
+                            print(f"  {jname} {year} {aid}: {len(figures)} figs "
+                                  f"(total {n_fig})")
+                            time.sleep(delay)
+                except Exception as e:
+                    print(f"  !! {jname} {year} aborted: {type(e).__name__}: {e}")
+                    continue
     print(f"done: {n_fig} figures this run")
 
 
