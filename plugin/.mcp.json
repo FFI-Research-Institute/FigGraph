@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "figraph": {
+      "command": "figraph",
+      "args": ["serve"],
+      "cwd": "${CLAUDE_PROJECT_DIR}",
+      "env": {
+        "FIGRAPH_DB": "${CLAUDE_PROJECT_DIR}/figraph.db",
+        "FIGRAPH_DIR": "${CLAUDE_PROJECT_DIR}/figures"
+      }
+    }
+  }
+}

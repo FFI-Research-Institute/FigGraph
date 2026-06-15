@@ -1,0 +1,12 @@
+{
+  "name": "figraph",
+  "displayName": "FigGraph",
+  "version": "0.1.0",
+  "description": "Search a folder of scientific figures from your agent — codegraph for figures.",
+  "author": { "name": "FFI-Research-Institute" },
+  "homepage": "https://github.com/FFI-Research-Institute/FigGraph",
+  "repository": "https://github.com/FFI-Research-Institute/FigGraph",
+  "license": "MIT",
+  "keywords": ["figures", "search", "mcp", "scientific-visualization", "agent-tools"],
+  "mcpServers": "./.mcp.json"
+}

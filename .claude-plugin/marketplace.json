@@ -1,0 +1,11 @@
+{
+  "name": "figraph",
+  "owner": { "name": "FFI-Research-Institute" },
+  "plugins": [
+    {
+      "name": "figraph",
+      "source": "./plugin",
+      "description": "Search a folder of scientific figures from your agent — codegraph for figures."
+    }
+  ]
+}

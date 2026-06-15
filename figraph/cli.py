@@ -11,11 +11,19 @@ import sys
 
 from figraph import index, scrape, search, update
 
+
+def _serve():
+    # lazy import so the CLI works without the optional `mcp` dependency
+    from figraph import mcp_server
+    mcp_server.main()
+
+
 SUBCOMMANDS = {
     "scrape": scrape.main,
     "index": index.main,
     "search": search.main,
     "update": update.main,
+    "serve": _serve,
 }
 
 

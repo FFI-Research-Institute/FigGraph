@@ -13,6 +13,9 @@ authors = [{ name = "FFI-Research-Institute" }]
 keywords = ["figures", "scientific-visualization", "search", "fts5", "nature", "agent-tools"]
 dependencies = ["httpx", "lxml"]
 
+[project.optional-dependencies]
+mcp = ["mcp>=1.2"]
+
 [project.scripts]
 figraph = "figraph.cli:main"
 

@@ -1,8 +1,6 @@
 <div align="center">
 
-# FigGraph
-
-**codegraph, but for your figures.**
+<img src="docs/banner.svg" alt="FigGraph — codegraph, but for your figures" width="840">
 
 Ask *"what's the best way to plot this?"* — and get real, published figures back,
 instead of guessing.
@@ -70,6 +68,10 @@ A search returns the figures whose captions best match, ready to open:
 
 ## How it works
 
+<div align="center">
+<img src="docs/concept.svg" alt="figure folder → caption index → figraph search → ranked exemplars" width="900">
+</div>
+
 The trick is that **a scientific figure usually ships with its caption** — a precise,
 human-written description of exactly what it shows. FigGraph indexes those captions with
 SQLite FTS5, so search is accurate *without* needing a vision model. You search by content
@@ -98,11 +100,24 @@ Wire it to cron for hands-off updates, e.g. every Monday at 03:00:
 
 ## Use it from an agent
 
-FigGraph is built to be called by AI coding agents while they make figures: the agent
-searches the index for published exemplars, looks at the top matches, and grounds its plot
-in what actually works. A native MCP server (so an agent gets `figraph_*` tools, the way
-codegraph exposes `codegraph_*`) is on the roadmap; today, agents call the `figraph search`
-CLI directly.
+FigGraph ships an **MCP server**, so an AI coding agent gets native `figraph_search` /
+`figraph_status` tools — the way codegraph exposes `codegraph_*`. While making a figure the
+agent searches the index, looks at the top matches, and grounds its plot in what actually
+works.
+
+Install it as a Claude Code plugin:
+
+```bash
+pip install "figraph[mcp]"
+```
+
+```text
+/plugin marketplace add FFI-Research-Institute/FigGraph
+/plugin install figraph
+```
+
+Or run the server directly with `figraph serve` (stdio). No agent? The same queries work
+from the shell via `figraph search`.
 
 ## Responsible use
 
@@ -114,11 +129,11 @@ where you can.
 
 ## Roadmap
 
-- **Now** — `scrape` → caption-based FTS5 index → `search` → scheduled `update`.
+- **Now** — `scrape` → caption-based FTS5 index → `search` → scheduled `update`; an MCP
+  server + Claude Code plugin exposing `figraph_*` tools to agents.
 - **Next** — pluggable vision captioner (local VLM / API) so caption-less folders become
   searchable; a local folder watcher for live re-indexing; CLIP / BiomedCLIP embeddings for
-  visual-similarity search; an MCP server + Claude Code plugin; more open-access adapters
-  (PLOS, eLife, bioRxiv).
+  visual-similarity search; more open-access adapters (PLOS, eLife, bioRxiv).
 
 See [`docs/DESIGN.md`](docs/DESIGN.md) for the full design.
 
