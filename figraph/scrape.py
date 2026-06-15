@@ -77,7 +77,14 @@ def iter_article_ids(client, journal, year, max_pages):
     while max_pages is None or page <= max_pages:
         url = (f"https://www.nature.com/{journal}/research-articles"
                f"?year={year}&page={page}")
-        html = _get(client, url)
+        try:
+            html = _get(client, url)
+        except Exception as e:
+            # Nature 404s when you page past the last page (not an empty page);
+            # any other listing failure also ends this journal-year — a later
+            # run re-pages from the start and heals any gap.
+            print(f"  ! listing {journal} {year} p{page} ended ({type(e).__name__})")
+            break
         ids = [i for i in ID_RE.findall(html) if i not in seen]
         if not ids:
             break
