@@ -49,6 +49,22 @@ python -m figraph.search "single-cell umap clusters" --tag umap-tsne
 skips articles it has already fetched). Run it again with more journals or years
 and it only fetches what's new.
 
+### Keeping it fresh
+
+Nature keeps publishing, so refresh on a schedule. This is the remote-source
+analogue of codegraph's auto-reindex: a website can't be watched with inotify, so
+`update` polls for newly-published articles and rebuilds the index.
+
+```bash
+python -m figraph.update            # fetch new articles for recent years, reindex
+```
+
+Wire it to cron for hands-off updates, e.g. every Monday at 03:00:
+
+```cron
+0 3 * * 1  cd /path/to/FigGraph && .venv/bin/python -m figraph.update >> update.log 2>&1
+```
+
 ## Scope
 
 The scraper covers Nature's flagship plus its branded research journals (Methods,
@@ -65,9 +81,9 @@ no code.
 
 ## Roadmap
 
-- **Now:** scrape → legend-based FTS5 index → search CLI.
+- **Now:** scrape → legend-based FTS5 index → search CLI → scheduled `update`.
 - **Later:** pluggable vision captioner (local VLM / API) so *caption-less* folders
-  become searchable too; a folder watcher for live re-indexing; CLIP / BiomedCLIP
+  become searchable too; a local folder watcher for live re-indexing; CLIP / BiomedCLIP
   embeddings for visual-similarity search; an MCP server + Claude Code plugin so an
   agent gets native `figraph_*` tools; more open-access source adapters.
 

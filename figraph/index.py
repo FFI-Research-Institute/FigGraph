@@ -43,22 +43,26 @@ def chart_tags(legend: str) -> str:
     return " ".join(hits)
 
 
-def main():
-    ap = argparse.ArgumentParser(description="Build figraph FTS5 index.")
-    ap.add_argument("--meta", type=Path, default=Path("figures/metadata.jsonl"))
-    ap.add_argument("--db", type=Path, default=Path("figraph.db"))
-    a = ap.parse_args()
-
+def build_index(meta: Path, db: Path) -> int:
     rows = []
-    for line in a.meta.read_text("utf-8").splitlines():
+    for line in meta.read_text("utf-8").splitlines():
         if not line.strip():
             continue
         r = json.loads(line)
         r["tags"] = chart_tags(r.get("legend", ""))
         rows.append(r)
-    n = store.build(str(a.db), rows)
+    n = store.build(str(db), rows)
     tagged = sum(1 for r in rows if r["tags"])
-    print(f"indexed {n} figures into {a.db}  ({tagged} got a chart-type tag)")
+    print(f"indexed {n} figures into {db}  ({tagged} got a chart-type tag)")
+    return n
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Build figraph FTS5 index.")
+    ap.add_argument("--meta", type=Path, default=Path("figures/metadata.jsonl"))
+    ap.add_argument("--db", type=Path, default=Path("figraph.db"))
+    a = ap.parse_args()
+    build_index(a.meta, a.db)
 
 
 if __name__ == "__main__":
