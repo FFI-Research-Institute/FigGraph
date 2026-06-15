@@ -6,7 +6,8 @@ figure index (the way codegraph exposes `codegraph_*`).
 ## Install
 
 ```bash
-pip install "figraph[mcp]"            # the MCP server lives in the figraph package
+# the MCP server lives in the figraph package
+pip install "figraph[mcp] @ git+https://github.com/FFI-Research-Institute/FigGraph.git"
 ```
 
 ```text

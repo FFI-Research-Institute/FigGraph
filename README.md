@@ -52,7 +52,8 @@ pip install -e .
 
 ```bash
 # 1. fill a folder with figures + captions (bundled Nature adapter)
-figraph scrape --journals nature nmeth nm --years 2024 --out figures
+#    --pages 2 keeps this first run quick; drop it to take a whole year
+figraph scrape --journals nature nmeth nm --years 2024 --pages 2 --out figures
 
 # 2. build the search index
 figraph index
@@ -112,7 +113,7 @@ works.
 Install it as a Claude Code plugin:
 
 ```bash
-pip install "figraph[mcp]"
+pip install "figraph[mcp] @ git+https://github.com/FFI-Research-Institute/FigGraph.git"
 ```
 
 ```text
