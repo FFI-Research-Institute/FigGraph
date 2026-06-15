@@ -1,0 +1,14 @@
+# scraped figures, the local index, and logs are large local artifacts —
+# regenerable by re-running the scraper/indexer, so they stay out of git.
+figures/
+*.db
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# editor / os
+.DS_Store
+*.swp
