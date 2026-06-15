@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "figraph"
+version = "0.1.0"
+description = "A searchable index over a folder of scientific figures — codegraph for figures."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "FFI-Research-Institute" }]
+keywords = ["figures", "scientific-visualization", "search", "fts5", "nature", "agent-tools"]
+dependencies = ["httpx", "lxml"]
+
+[project.scripts]
+figraph = "figraph.cli:main"
+
+[project.urls]
+Repository = "https://github.com/FFI-Research-Institute/FigGraph"
+
+[tool.setuptools]
+packages = ["figraph"]

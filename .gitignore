@@ -8,6 +8,9 @@ figures/
 __pycache__/
 *.pyc
 .pytest_cache/
+*.egg-info/
+build/
+dist/
 
 # editor / os
 .DS_Store
