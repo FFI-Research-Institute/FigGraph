@@ -27,9 +27,9 @@ import lxml.html
 # sub-journals are verified empirically before the full run (a wrong code yields
 # an empty listing, which is easy to catch).
 # Nature flagship + Nature-branded research journals with 2024 JCR IF >= 20
-# ("大子刊"), plus Nature Machine Intelligence (~18) as the one AI4Science
-# exception — it is the AI-for-science flagship. Already-scraped Nature Physics
-# (~17) is kept since it was collected before the IF floor was set.
+# ("大子刊"), plus two sub-20 keepers for the AI4Science route: Nature Machine
+# Intelligence (~18, the AI-for-science flagship) and Nature Neuroscience (19.5,
+# brain imaging). Already-scraped Nature Physics (~17) is kept too.
 JOURNALS = {
     "nature": "Nature",
     "nmeth": "Nature Methods",
@@ -43,6 +43,7 @@ JOURNALS = {
     "nchem": "Nature Chemistry",
     "ni": "Nature Immunology",
     "natmachintell": "Nature Machine Intelligence",
+    "neuro": "Nature Neuroscience",
     "nenergy": "Nature Energy",
     "natcatal": "Nature Catalysis",
     "nclimate": "Nature Climate Change",
