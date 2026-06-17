@@ -61,6 +61,7 @@ figraph index
 # 3. search — get back ranked figures and their local paths
 figraph search "kaplan-meier survival hazard ratio" -k 8
 figraph search "single-cell umap clusters" --tag umap-tsne
+figraph search "perovskite solar cell" --html gallery.html   # browsable thumbnails
 ```
 
 A search returns the figures whose captions best match, ready to open:

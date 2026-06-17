@@ -3,6 +3,9 @@
 figures/
 *.db
 
+# generated search galleries
+*.html
+
 # python
 .venv/
 __pycache__/
