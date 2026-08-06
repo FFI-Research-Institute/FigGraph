@@ -91,8 +91,9 @@ the default collection path.
 Search results are added idempotently to a persistent annotation queue. The
 `figraph annotate` worker derives L2 weak labels from titles, captions and existing
 caption tags, while keeping no-signal and failed jobs separate. These labels aid
-retrieval; they are not visual verification. Previously labelled search results
-include a `weak_annotation` record in JSON and MCP responses.
+downstream figure selection but do not alter FTS ranking; they are not visual
+verification. Previously labelled search results include a `weak_annotation`
+record in JSON and MCP responses.
 
 <div align="center">
 <img src="docs/concept.svg" alt="figure folder → caption index → figraph search → ranked exemplars" width="900">
