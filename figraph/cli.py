@@ -4,13 +4,14 @@
     figraph index
     figraph recommend "compare uncertainty distributions across three groups"
     figraph search "kaplan-meier survival" -k 8
+    figraph annotate --budget 100
     figraph update
 """
 from __future__ import annotations
 
 import sys
 
-from figraph import index, recommend, scrape, search, update
+from figraph import annotate, index, recommend, scrape, search, update
 
 
 def _serve():
@@ -20,6 +21,7 @@ def _serve():
 
 
 SUBCOMMANDS = {
+    "annotate": annotate.main,
     "scrape": scrape.main,
     "index": index.main,
     "recommend": recommend.main,

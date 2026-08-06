@@ -15,6 +15,7 @@ from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
+from figraph import annotate
 from figraph import recommend as chart_recommend
 from figraph import store
 
@@ -57,6 +58,8 @@ def figraph_search(query: str, k: int = 10, tag: str | None = None) -> list[dict
     `journal`, `year`, `tags`, and relevance `score`.
     """
     rows = store.search(DB, query, k, tag)
+    annotate.attach_annotations(DB, rows)
+    annotate.enqueue_search_results(DB, rows, query)
     out = []
     for r in rows:
         out.append({
@@ -65,6 +68,7 @@ def figraph_search(query: str, k: int = 10, tag: str | None = None) -> list[dict
             "title": r["title"], "fig_num": r["fig_num"],
             "tags": r["tags"], "score": round(r["score"], 3),
             "caption": (r["legend"] or "")[:400],
+            "weak_annotation": r.get("weak_annotation"),
         })
     return out
 
@@ -83,6 +87,7 @@ def figraph_status() -> dict:
         "db": DB, "figdir": str(FIGDIR), "figures": n, "journals": j,
         "router_catalog": str(ROUTER_CATALOG),
         "router_exists": ROUTER_CATALOG.is_file(),
+        "annotations": annotate.status(DB),
     }
 
 

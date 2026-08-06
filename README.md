@@ -65,6 +65,10 @@ figraph recommend "compare three failure-family distributions and retain all obs
 figraph search "kaplan-meier survival hazard ratio" -k 8
 figraph search "single-cell umap clusters" --tag umap-tsne
 figraph search "perovskite solar cell" --html gallery.html   # browsable thumbnails
+
+# 5. process queued caption weak labels, or inspect queue coverage
+figraph annotate --budget 100
+figraph annotate --status
 ```
 
 A search returns the figures whose captions best match, ready to open:
@@ -83,6 +87,12 @@ families, states when each candidate should not be used, and returns a
 `figraph search` query for published exemplars. A router catalog is a local asset;
 set its path with `FIGRAPH_ROUTER_CATALOG` or `--catalog` when it is not stored at
 the default collection path.
+
+Search results are added idempotently to a persistent annotation queue. The
+`figraph annotate` worker derives L2 weak labels from titles, captions and existing
+caption tags, while keeping no-signal and failed jobs separate. These labels aid
+retrieval; they are not visual verification. Previously labelled search results
+include a `weak_annotation` record in JSON and MCP responses.
 
 <div align="center">
 <img src="docs/concept.svg" alt="figure folder → caption index → figraph search → ranked exemplars" width="900">
@@ -114,10 +124,15 @@ Wire it to cron for hands-off updates, e.g. every Monday at 03:00:
 0 3 * * 1  cd /path/to/FigGraph && figraph update >> update.log 2>&1
 ```
 
+Caption weak labels can grow through actual use rather than a full-corpus batch.
+Run `scripts/run_annotation_worker.sh` on a small recurring budget; every search
+queues only unseen or stale results, and taxonomy-version changes requeue affected
+records without duplicating current work.
+
 ## Use it from an agent
 
-FigGraph ships an **MCP server**, so an AI coding agent gets native `figraph_search` /
-`figraph_status` tools — the way codegraph exposes `codegraph_*`. While making a figure the
+FigGraph ships an **MCP server**, so an AI coding agent gets native `figraph_recommend` /
+`figraph_search` / `figraph_status` tools — the way codegraph exposes `codegraph_*`. While making a figure the
 agent searches the index, looks at the top matches, and grounds its plot in what actually
 works.
 
@@ -145,8 +160,9 @@ where you can.
 
 ## Roadmap
 
-- **Now** — `scrape` → caption-based FTS5 index → `search` → scheduled `update`; an MCP
-  server + Claude Code plugin exposing `figraph_*` tools to agents.
+- **Now** — `scrape` → caption-based FTS5 index → `recommend` / `search` → incremental
+  L2 caption weak labels → scheduled `update`; an MCP server + Claude Code plugin
+  exposing `figraph_*` tools to agents.
 - **Next** — pluggable vision captioner (local VLM / API) so caption-less folders become
   searchable; a local folder watcher for live re-indexing; CLIP / BiomedCLIP embeddings for
   visual-similarity search; more open-access adapters (PLOS, eLife, bioRxiv).

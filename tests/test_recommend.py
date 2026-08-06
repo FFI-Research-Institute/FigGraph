@@ -51,6 +51,17 @@ class RecommendTests(unittest.TestCase):
                 "folder_path": "figures/036", "r_script": "036.R",
                 "annotation_level": "L1_curated_folder", "confidence": 0.88,
             },
+            {
+                "num": "029", "chart_type": "Table 1", "display_name": "基线表",
+                "folder": "029_基线表", "aliases": ["table", "one"],
+                "intents": ["table"], "intent_terms": ["baseline characteristics"],
+                "use_when": "describe a cohort", "avoid_when": "showing a trend",
+                "data_shape": ["cohort characteristics"],
+                "claim_roles": ["baseline description"],
+                "search_query": "029 table one", "folder_path": "figures/029",
+                "r_script": "029.R", "annotation_level": "L1_curated_folder",
+                "confidence": 0.88,
+            },
         ]
         self.catalog.write_text(
             "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows),
@@ -79,6 +90,10 @@ class RecommendTests(unittest.TestCase):
     def test_generic_plot_alias_does_not_override_intent(self):
         rows = recommend.recommend("plot uncertainty", 3, self.catalog)
         self.assertEqual(rows[0]["num"], "036")
+
+    def test_generic_one_alias_does_not_create_table_candidate(self):
+        rows = recommend.recommend("one source-to-target flow", 5, self.catalog)
+        self.assertNotIn("029", [row["num"] for row in rows])
 
 
 if __name__ == "__main__":

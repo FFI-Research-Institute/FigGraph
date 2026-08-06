@@ -13,7 +13,7 @@ DEFAULT_CATALOG = Path(os.environ.get(
     "figures/collections/top_journal_reproductions_80/chart_router.jsonl",
 ))
 
-GENERIC_ALIASES = {"analysis", "chart", "diagram", "plot"}
+GENERIC_ALIASES = {"analysis", "chart", "diagram", "one", "plot"}
 
 INTENT_PATTERNS = {
     "comparison": ["比较", "对比", "差异", "哪个更好", "compare", "difference"],

@@ -22,5 +22,5 @@ The server reads the index from your project: `FIGRAPH_DB` (default
 ## Tools
 
 - `figraph_recommend(question, k=5)` — chart families ranked from the scientific question and evidence role.
-- `figraph_search(query, k=10, tag=None)` — ranked figures with local image paths.
-- `figraph_status()` — index location and size.
+- `figraph_search(query, k=10, tag=None)` — ranked figures with local image paths; search hits are queued for incremental caption weak labels.
+- `figraph_status()` — index location, size, and annotation queue coverage.

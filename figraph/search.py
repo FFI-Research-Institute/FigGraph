@@ -11,7 +11,7 @@ import json
 import os
 from pathlib import Path
 
-from figraph import store
+from figraph import annotate, store
 
 
 def _render_html(query, rows, outpath):
@@ -65,6 +65,8 @@ def main():
     a = ap.parse_args()
 
     rows = store.search(str(a.db), a.query, a.k, a.tag)
+    annotate.attach_annotations(a.db, rows)
+    annotate.enqueue_search_results(a.db, rows, a.query)
     for r in rows:
         r["path"] = str(a.figdir / r["local_path"])
 
