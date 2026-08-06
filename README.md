@@ -58,7 +58,10 @@ figraph scrape --journals nature nmeth nm --years 2024 --pages 2 --out figures
 # 2. build the search index
 figraph index
 
-# 3. search — get back ranked figures and their local paths
+# 3. with a local router catalog, recommend before choosing a chart type
+figraph recommend "compare three failure-family distributions and retain all observations"
+
+# 4. search — get back ranked figures and their local paths
 figraph search "kaplan-meier survival hazard ratio" -k 8
 figraph search "single-cell umap clusters" --tag umap-tsne
 figraph search "perovskite solar cell" --html gallery.html   # browsable thumbnails
@@ -73,6 +76,13 @@ A search returns the figures whose captions best match, ready to open:
 ```
 
 ## How it works
+
+`figraph recommend` adds a small problem-to-chart routing layer before retrieval.
+It maps the intended comparison, data shape and evidence role to candidate chart
+families, states when each candidate should not be used, and returns a
+`figraph search` query for published exemplars. A router catalog is a local asset;
+set its path with `FIGRAPH_ROUTER_CATALOG` or `--catalog` when it is not stored at
+the default collection path.
 
 <div align="center">
 <img src="docs/concept.svg" alt="figure folder → caption index → figraph search → ranked exemplars" width="900">

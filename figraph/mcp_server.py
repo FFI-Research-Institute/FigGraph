@@ -15,12 +15,28 @@ from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
+from figraph import recommend as chart_recommend
 from figraph import store
 
 DB = os.environ.get("FIGRAPH_DB", "figraph.db")
 FIGDIR = Path(os.environ.get("FIGRAPH_DIR", "figures"))
+ROUTER_CATALOG = Path(os.environ.get(
+    "FIGRAPH_ROUTER_CATALOG",
+    "figures/collections/top_journal_reproductions_80/chart_router.jsonl",
+))
 
 mcp = FastMCP("figraph")
+
+
+@mcp.tool()
+def figraph_recommend(question: str, k: int = 5) -> list[dict]:
+    """Recommend chart families before searching for published examples.
+
+    Call this first when the scientific question or evidence role is known but
+    the chart type is not. Then pass a selected recommendation's `search_query`
+    to `figraph_search` and inspect the returned images.
+    """
+    return chart_recommend.recommend(question, k, ROUTER_CATALOG)
 
 
 @mcp.tool()
@@ -63,7 +79,11 @@ def figraph_status() -> dict:
     n = c.execute("SELECT count(*) FROM figures").fetchone()[0]
     j = c.execute("SELECT count(DISTINCT journal) FROM figures").fetchone()[0]
     c.close()
-    return {"db": DB, "figdir": str(FIGDIR), "figures": n, "journals": j}
+    return {
+        "db": DB, "figdir": str(FIGDIR), "figures": n, "journals": j,
+        "router_catalog": str(ROUTER_CATALOG),
+        "router_exists": ROUTER_CATALOG.is_file(),
+    }
 
 
 def main():

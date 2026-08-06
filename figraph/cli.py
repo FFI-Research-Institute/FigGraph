@@ -2,6 +2,7 @@
 
     figraph scrape --journals nature --years 2024
     figraph index
+    figraph recommend "compare uncertainty distributions across three groups"
     figraph search "kaplan-meier survival" -k 8
     figraph update
 """
@@ -9,7 +10,7 @@ from __future__ import annotations
 
 import sys
 
-from figraph import index, scrape, search, update
+from figraph import index, recommend, scrape, search, update
 
 
 def _serve():
@@ -21,6 +22,7 @@ def _serve():
 SUBCOMMANDS = {
     "scrape": scrape.main,
     "index": index.main,
+    "recommend": recommend.main,
     "search": search.main,
     "update": update.main,
     "serve": _serve,

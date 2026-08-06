@@ -1,6 +1,6 @@
 # FigGraph — Claude Code plugin
 
-Gives your agent native `figraph_search` / `figraph_status` tools over a local
+Gives your agent native `figraph_recommend` / `figraph_search` / `figraph_status` tools over a local
 figure index (the way codegraph exposes `codegraph_*`).
 
 ## Install
@@ -21,5 +21,6 @@ The server reads the index from your project: `FIGRAPH_DB` (default
 
 ## Tools
 
+- `figraph_recommend(question, k=5)` — chart families ranked from the scientific question and evidence role.
 - `figraph_search(query, k=10, tag=None)` — ranked figures with local image paths.
 - `figraph_status()` — index location and size.
